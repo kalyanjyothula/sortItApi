@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    minlength: 8,
     trim: true,
     unique: true,
     validate: {
@@ -20,13 +19,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
     trim: true
   },
   mobileNo: {
     type: String,
-    minlength: 10,
-    maxlength: 10,
     required: true,
     trim: true,
     unique: true,

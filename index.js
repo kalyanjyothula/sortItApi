@@ -4,6 +4,7 @@ const _ = require("lodash");
 
 const { mongoose } = require("./db/db-connection/mongoose");
 const { User } = require("./models/users");
+const { Products } = require("./models/products");
 const { authentication } = require("./middleware/authenticate");
 
 const app = express();
@@ -12,6 +13,15 @@ const port = process.env.PORT || 4000;
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, GET, DELETE");
+    return res.status(200).json({});
+  }
+  next();
+});
 // ------   public routes ---------
 
 app.post("/api/signup", (req, res) => {
@@ -53,6 +63,30 @@ app.delete("/api/logout", authentication, (req, res) => {
     .removeToken(req.token)
     .then(data => res.status(200).send())
     .catch(err => res.status(400).send());
+});
+//---- products ------
+
+app.get("/api/products", (req, res) => {
+  Products.find()
+    .then(data => res.send({ data }))
+    .catch(err => res.status(404).send(err));
+});
+
+app.post("/api/products", (req, res) => {
+  const body = _.pick(req.body, [
+    "name",
+    "imgUrl",
+    "cost",
+    "rating",
+    "trend",
+    "description"
+  ]);
+
+
+  const Product = new Products(body);
+  return Product.save()
+    .then(data => res.send({ success: true, name: data.name }))
+    .catch(err => res.status(404).send(err));
 });
 
 //---- private route --------
