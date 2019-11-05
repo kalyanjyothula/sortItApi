@@ -15,7 +15,10 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization , X-Api-Key"
+  );
   if (req.method === "OPTIONS") {
     res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, GET, DELETE");
     return res.status(200).json({});
@@ -35,7 +38,7 @@ app.post("/api/signup", (req, res) => {
     .then(token =>
       res
         .header("x-auth", token)
-        .send({ success: true, _id: user._id, email: user.email })
+        .send({ success: true, _id: user._id, email: user.email, token })
     )
     .catch(err => res.status(400).send(err));
 });
@@ -49,7 +52,7 @@ app.post("/api/login", (req, res) => {
         .then(token =>
           res
             .header("x-auth", token)
-            .send({ success: true, _id: user._id, email: user.email })
+            .send({ success: true, _id: user._id, email: user.email, token })
         );
     })
     .catch(err => {
@@ -60,8 +63,8 @@ app.post("/api/login", (req, res) => {
 
 app.delete("/api/logout", authentication, (req, res) => {
   req.user
-    .removeToken(req.token)
-    .then(data => res.status(200).send())
+    .removeToken(req.body.token)
+    .then(data => res.status(200).send({success: true}))
     .catch(err => res.status(400).send());
 });
 //---- products ------
@@ -81,7 +84,6 @@ app.post("/api/products", (req, res) => {
     "trend",
     "description"
   ]);
-
 
   const Product = new Products(body);
   return Product.save()
