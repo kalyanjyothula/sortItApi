@@ -123,5 +123,12 @@ app.post("/api/cart", authentication, (req, res) => {
     .catch(err => res.send({ err }));
 });
 
+app.get("/api/userCart", authentication, (req, res) => {
+  const id = req.user._id;
+  return Cart.find({ userId: id })
+    .then(data => res.send({ success: true, data }))
+    .catch(err => res.status(404).send({ err }));
+});
+
 // ------------ server ------
 app.listen(port, () => console.log("Application running on port", port));
