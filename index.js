@@ -5,6 +5,7 @@ const _ = require("lodash");
 const { mongoose } = require("./db/db-connection/mongoose");
 const { User } = require("./models/users");
 const { Products } = require("./models/products");
+const { Cart } = require("./models/cart");
 const { authentication } = require("./middleware/authenticate");
 
 const app = express();
@@ -64,7 +65,7 @@ app.post("/api/login", (req, res) => {
 app.delete("/api/logout", authentication, (req, res) => {
   req.user
     .removeToken(req.body.token)
-    .then(data => res.status(200).send({success: true}))
+    .then(data => res.status(200).send({ success: true }))
     .catch(err => res.status(400).send());
 });
 //---- products ------
@@ -94,7 +95,32 @@ app.post("/api/products", (req, res) => {
 //---- private route --------
 
 app.post("/api/cart", authentication, (req, res) => {
-  res.send(req.user);
+  const body = _.pick(req.body, [
+    "imgUrl",
+    "quantity",
+    "name",
+    "cost",
+    "productId"
+  ]);
+  body.userId = req.user._id;
+  return Cart.addToCart(body)
+    .then(data => {
+      if (!data) {
+        const cart = new Cart(body);
+        cart
+          .save()
+          .then(() => res.send({ success: true }))
+          .catch(err => res.send({ err }));
+      } else {
+        Cart.updateOne(
+          { _id: data._id },
+          { $set: { quantity: data.quantity + 1 } }
+        )
+          .then(() => res.send({ success: true }))
+          .catch(err => res.send({ err }));
+      }
+    })
+    .catch(err => res.send({ err }));
 });
 
 // ------------ server ------
