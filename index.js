@@ -123,7 +123,7 @@ app.post("/api/cart", authentication, (req, res) => {
     .catch(err => res.send({ err }));
 });
 
-app.get("/api/userCart", authentication, (req, res) => {
+app.post("/api/userCart", authentication, (req, res) => {
   const id = req.user._id;
   return Cart.find({ userId: id })
     .then(data => res.send({ success: true, data }))
