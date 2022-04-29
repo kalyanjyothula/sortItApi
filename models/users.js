@@ -93,7 +93,7 @@ userSchema.statics.findByCredentials = function(email, password) {
     return new Promise((resolve, reject) => {
       bcrypt.compare(password, data.password, (err, res) => {
         if (res) resolve(data);
-        else reject({ err: "invalid password!" });
+        else reject({ err: "Invalid password!" });
       });
     });
   });
