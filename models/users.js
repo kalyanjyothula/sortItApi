@@ -55,7 +55,7 @@ userSchema.methods.generateAuthToken = function() {
   const user = this;
   const access = "auth";
   const token = jwt
-    .sign({ _id: user._id.toHexString(), access }, "secret: miniCart")
+    .sign({ _id: user._id.toHexString(), access }, "secret: sortIt@Kalyan")
     .toString();
   user.tokens.push({ access, token });
 
@@ -75,7 +75,7 @@ userSchema.statics.findByToken = function(token) {
   const user = this;
   let decode;
   try {
-    decode = jwt.verify(token, "secret: miniCart");
+    decode = jwt.verify(token, "secret: sortIt@Kalyan");
   } catch (err) {
     return Promise.reject();
   }

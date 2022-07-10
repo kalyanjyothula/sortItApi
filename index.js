@@ -4,8 +4,6 @@ const _ = require("lodash");
 
 const { mongoose } = require("./db/db-connection/mongoose");
 const { User } = require("./models/users");
-const { Products } = require("./models/products");
-const { Cart } = require("./models/cart");
 const { authentication } = require("./middleware/authenticate");
 
 const app = express();
@@ -70,65 +68,65 @@ app.delete("/api/logout", authentication, (req, res) => {
 });
 //---- products ------
 
-app.get("/api/products", (req, res) => {
-  Products.find()
-    .then(data => res.send({ data }))
-    .catch(err => res.status(404).send(err));
-});
+// app.get("/api/products", (req, res) => {
+//   Products.find()
+//     .then(data => res.send({ data }))
+//     .catch(err => res.status(404).send(err));
+// });
 
-app.post("/api/products", (req, res) => {
-  const body = _.pick(req.body, [
-    "name",
-    "imgUrl",
-    "cost",
-    "rating",
-    "trend",
-    "description"
-  ]);
+// app.post("/api/products", (req, res) => {
+//   const body = _.pick(req.body, [
+//     "name",
+//     "imgUrl",
+//     "cost",
+//     "rating",
+//     "trend",
+//     "description"
+//   ]);
 
-  const Product = new Products(body);
-  return Product.save()
-    .then(data => res.send({ success: true, name: data.name }))
-    .catch(err => res.status(404).send(err));
-});
+//   const Product = new Products(body);
+//   return Product.save()
+//     .then(data => res.send({ success: true, name: data.name }))
+//     .catch(err => res.status(404).send(err));
+// });
 
 //---- private route --------
 
-app.post("/api/cart", authentication, (req, res) => {
-  const body = _.pick(req.body, [
-    "imgUrl",
-    "quantity",
-    "name",
-    "cost",
-    "productId"
-  ]);
-  body.userId = req.user._id;
-  return Cart.addToCart(body)
-    .then(data => {
-      if (!data) {
-        const cart = new Cart(body);
-        cart
-          .save()
-          .then(() => res.send({ success: true }))
-          .catch(err => res.send({ err }));
-      } else {
-        Cart.updateOne(
-          { _id: data._id },
-          { $set: { quantity: data.quantity + 1 } }
-        )
-          .then(() => res.send({ success: true }))
-          .catch(err => res.send({ err }));
-      }
-    })
-    .catch(err => res.send({ err }));
-});
+// app.post("/api/cart", authentication, (req, res) => {
+//   const body = _.pick(req.body, [
+//     "imgUrl",
+//     "quantity",
+//     "name",
+//     "cost",
+//     "productId"
+//   ]);
+//   body.userId = req.user._id;
+//   return Cart.addToCart(body)
+//     .then(data => {
+//       if (!data) {
+//         const cart = new Cart(body);
+//         cart
+//           .save()
+//           .then(() => res.send({ success: true }))
+//           .catch(err => res.send({ err }));
+//       } else {
+//         Cart.updateOne(
+//           { _id: data._id },
+//           { $set: { quantity: data.quantity + 1 } }
+//         )
+//           .then(() => res.send({ success: true }))
+//           .catch(err => res.send({ err }));
+//       }
+//     })
+//     .catch(err => res.send({ err }));
+// });
 
-app.post("/api/userCart", authentication, (req, res) => {
-  const id = req.user._id;
-  return Cart.find({ userId: id })
-    .then(data => res.send({ success: true, data }))
-    .catch(err => res.status(404).send({ err }));
-});
+// app.post("/api/userCart", authentication, (req, res) => {
+//   const id = req.user._id;
+//   return Cart.find({ userId: id })
+//     .then(data => res.send({ success: true, data }))
+//     .catch(err => res.status(404).send({ err }));
+// });
 
 // ------------ server ------
 app.listen(port, () => console.log("Application running on port", port));
