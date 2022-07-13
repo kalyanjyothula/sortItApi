@@ -21,17 +21,17 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  mobileNo: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true,
-    validate: {
-      validator: /\d{10}$/,
-      message: "{VALUE} is not a valid mobile number"
-    }
-  },
-  userName: {
+  // mobileNo: {
+  //   type: String,
+  //   required: true,
+  //   trim: true,
+  //   unique: true,
+  //   validate: {
+  //     validator: /\d{10}$/,
+  //     message: "{VALUE} is not a valid mobile number"
+  //   }
+  // },
+  name: {
     type: String,
     required: true,
     trim: true,

@@ -8,7 +8,7 @@ const { authentication } = require("./middleware/authenticate");
 
 const app = express();
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
 
@@ -27,34 +27,36 @@ app.use((req, res, next) => {
 // ------   public routes ---------
 
 app.post("/api/signup", (req, res) => {
-  const body = _.pick(req.body, ["email", "password", "mobileNo", "userName"]);
+  console.log("started");
+  const body = _.pick(req.body, ["email", "password", "name"]);
+  console.log(body, "body");
   const user = new User(body);
   user
     .save()
-    .then(data => {
+    .then((data) => {
       return data.generateAuthToken();
     })
-    .then(token =>
+    .then((token) =>
       res
         .header("x-auth", token)
         .send({ success: true, _id: user._id, email: user.email, token })
     )
-    .catch(err => res.status(400).send(err));
+    .catch((err) => res.status(400).send(err));
 });
 
 app.post("/api/login", (req, res) => {
   const body = _.pick(req.body, ["email", "password"]);
   User.findByCredentials(body.email, body.password)
-    .then(user => {
+    .then((user) => {
       return user
         .generateAuthToken()
-        .then(token =>
+        .then((token) =>
           res
             .header("x-auth", token)
             .send({ success: true, _id: user._id, email: user.email, token })
         );
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.send(err);
     });
@@ -63,16 +65,15 @@ app.post("/api/login", (req, res) => {
 app.delete("/api/logout", authentication, (req, res) => {
   req.user
     .removeToken(req.body.token)
-    .then(data => res.status(200).send({ success: true }))
-    .catch(err => res.status(400).send());
+    .then((data) => res.status(200).send({ success: true }))
+    .catch((err) => res.status(400).send());
 });
 //---- products ------
 
-// app.get("/api/products", (req, res) => {
-//   Products.find()
-//     .then(data => res.send({ data }))
-//     .catch(err => res.status(404).send(err));
-// });
+app.get("/api/products", (req, res) => {
+  console.log("invoked !");
+  res.status(200).send({ success: true });
+});
 
 // app.post("/api/products", (req, res) => {
 //   const body = _.pick(req.body, [

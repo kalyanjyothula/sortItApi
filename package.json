@@ -2,10 +2,10 @@
   "name": "sortit-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "sortItApi/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon sortItApi/index.js"
   },
   "author": "KalyanJyothula",
   "license": "ISC",
