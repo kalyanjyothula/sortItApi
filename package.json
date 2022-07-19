@@ -5,7 +5,10 @@
   "main": "sortItApi/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon sortItApi/index.js"
+    "start": "nodemon sortItApi/index.js",
+    "server": "nodemon sortItApi/index.js",
+    "client": "npm start --prefix sortIt",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "KalyanJyothula",
   "license": "ISC",
